@@ -1,0 +1,2 @@
+1. Nodes i ich pozycje nie powinny być trzymane w GraphCanvas tylko w populacji, albo w app logic
+2. Do GraphCanvas będą przekazane raz na początku.

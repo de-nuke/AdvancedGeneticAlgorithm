@@ -22,12 +22,13 @@ class GraphCanvas(FigureCanvas):
 
     def set_nodes(self, nodes=[]):
         self.G.add_path(nodes)
-        self.pos = {}
-        n = len(self.G.nodes())
-        x_coords = random.sample(range(1, 1+n), n)
-        y_coords = random.sample(range(1, 1+n), n)
-        for i, node in enumerate(self.G.nodes()):
-            self.pos.update({node: (x_coords[i], y_coords[i])})
+        self.pos = {1: (4,4), 2: (1,1), 3: (8,9), 4: (2,10), 5: (4,10), 6: (6,9), 7: (5,6), 8: (1,8), 9: (8,7), 10: (9,4)}
+        # self.pos = {}
+        # n = len(self.G.nodes())
+        # x_coords = random.sample(range(1, 1+n), n)
+        # y_coords = random.sample(range(1, 1+n), n)
+        # for i, node in enumerate(self.G.nodes()):
+        #     self.pos.update({node: (x_coords[i], y_coords[i])})
 
     def get_nodes(self):
         return self.G.nodes()

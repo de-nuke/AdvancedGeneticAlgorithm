@@ -3,8 +3,10 @@ from matplotlib.figure import Figure
 from PyQt5.QtWidgets import QSizePolicy
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.pyplot import text
 import networkx as nx
 from settings import *
+import numpy
 
 
 class GraphCanvas(FigureCanvas):
@@ -27,14 +29,6 @@ class GraphCanvas(FigureCanvas):
         for node in nodes:
             pos.update({node: POSITIONS[node]})
         self.pos = pos
-        print(self.pos)
-        # self.pos = {1: (4,4), 2: (1,1), 3: (8,9), 4: (2,10), 5: (4,10), 6: (6,9), 7: (5,6), 8: (1,8), 9: (8,7), 10: (9,4)}
-        # self.pos = {}
-        # n = len(self.G.nodes())
-        # x_coords = random.sample(range(1, 1+n), n)
-        # y_coords = random.sample(range(1, 1+n), n)
-        # for i, node in enumerate(self.G.nodes()):
-        #     self.pos.update({node: (x_coords[i], y_coords[i])})
 
     def get_nodes(self):
         return self.G.nodes()
@@ -42,16 +36,11 @@ class GraphCanvas(FigureCanvas):
     def plot(self, edges=[]):
         self.ax.clear()
         self.G.add_edges_from(edges)
-        print(self.pos)
-        # pos = {'A': (1, 1), 'B': (2, 2), 'C': (3, 5), 'D': (4, 4), 'E': (5, 6), 'F': (6, 3), 'G': (7, 7), 'H': (8, 8)}
-        # pos = nx.spring_layout(self.G)
-        # pos = nx.spectral_layout(self.G)
-        # pos = nx.shell_layout(self.G)
-        # pos = nx.random_layout(self.G)
 
-        nx.draw_networkx_nodes(self.G, self.pos, cmap=plt.get_cmap('jet'), node_size=500, ax=self.ax)
+        nx.draw_networkx_nodes(self.G, self.pos, cmap=plt.get_cmap('jet'), node_size=400, ax=self.ax)
         nx.draw_networkx_labels(self.G, self.pos, ax=self.ax)
         nx.draw_networkx_edges(self.G, self.pos, cmap=plt.get_cmap('jet'), edgelist=edges, edge_color='b', arrows=False, ax=self.ax)
+        self.ax.patch.set_alpha(0)
         self.draw()
 
 
@@ -64,5 +53,31 @@ class HistoryCanvas(FigureCanvas):
         FigureCanvas.setSizePolicy(self, QSizePolicy.Expanding, QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
         self.ax = self.figure.add_subplot(111)
-        fig.tight_layout()
+        # fig.tight_layout()
+        self.txt = self.ax.text(0.5, 0.9, '', transform=self.ax.transAxes, bbox=dict(facecolor='green', alpha=0.5), horizontalalignment='center')
         self.ax.patch.set_alpha(0)
+        self.y_lim = ()
+
+    def plot(self, max_hist, avg_hist, min_hist):
+        # self.ax.cla()
+        try:
+            x = range(len(max_hist))
+            self.ax.lines[0].set_data(x, max_hist)
+            self.ax.lines[1].set_data(x, avg_hist)
+            self.ax.lines[2].set_data(x, min_hist)
+        except IndexError:
+            print('był index error')
+            self.ax.plot(max_hist)  # Lots of overhead. Do once.
+            self.ax.plot(avg_hist)  # Lots of overhead. Do once.
+            self.ax.plot(min_hist)  # Lots of overhead. Do once.
+
+        # self.y_lim = self.ax.get_ylim()
+        if min_hist and max_hist:
+            self.ax.set_ylim([0.9 * min(min_hist), 1.1 * max(max_hist)])
+            self.txt.set_text('Maximum = {}, Minimum = {}, Average = {}'.format(round(max_hist[-1], 2), round(min_hist[-1], 2), round(avg_hist[-1], 2)))
+        self.ax.relim()
+        self.ax.autoscale_view(True, True, True)
+        self.draw()
+        # self.ax.plot(max_history, style + 'go', linewidth=6, markeredgecolor='yellow', markeredgewidth=1)
+        # self.ax.plot(avg_history, style + 'co', linewidth=3, markeredgecolor='black', markeredgewidth=1)
+        # self.ax.plot(min_history, style + 'ro', linewidth=0.8, markeredgecolor='black', markeredgewidth=1)

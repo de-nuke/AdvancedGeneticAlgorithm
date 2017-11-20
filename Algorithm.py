@@ -5,6 +5,7 @@ from numpy.random import choice
 from GraphObjects import Path
 from settings import *
 
+
 class Population:
     def __init__(self):
         self.cities = CITIES
@@ -14,31 +15,55 @@ class Population:
         self.mutation_prob = 0.001
         self.paths = []  # <-- Population
         self.is_initialized = False
+        self.progress_bar = None
+        self.progress_bar_text = None
+        self.current_iteration = 1
+        self.iteration_limit = 1
+
+    def set_progress_bar(self, progress_bar, progress_bar_text):
+        self.progress_bar = progress_bar
+        self.progress_bar_text = progress_bar_text
+
+    def set_iteration_limit(self, iteration_limit):
+        self.iteration_limit = iteration_limit
 
     def set_parameters(self, size=0, iterations=0, mutation_prob=0.001):
+        self.progress_bar_text.setText('Applying parameters...')
         self.size = (size if size <= self.MAX_SIZE else self.MAX_SIZE) if size > 0 else 0
         self.iterations = iterations
         self.mutation_prob = mutation_prob
         print('--Zaczynam generować')
+        self.progress_bar_text.setText('Generating paths...')
         self.paths = self.generate_n_paths(size)
         print('--Wygenerowałem')
         if size and iterations:
             self.is_initialized = True
+        self.progress_bar_text.setText('Ready!')
 
     def generate_n_paths(self, n):
         print('----Tworzę listę permutacji')
-        permutations = list(itertools.permutations(self.cities))
+        perm_gen = itertools.permutations(self.cities)
+        total = factorial(10)
+        permutations = []
+        if self.progress_bar:
+            for i, p in enumerate(perm_gen):
+                permutations.append(p)
+                if i % (total/100) == 0:
+                    self.progress_bar.setValue(round((i+1)/total, 2) * 100)
+            self.progress_bar.setValue(100)
+        else:
+            permutations = list(perm_gen)
         print('----Stworzona')
         return [Path(permutations[x]) for x in random.sample(range(self.MAX_SIZE), self.size)]
 
     def reproduce(self):
-        values = [path.length for path in self.paths]
+        values = [1/path.length for path in self.paths]
         sum_values = sum(values)
         roulette = dict()
 
         for i, path in enumerate(self.paths):
             roulette[path.id] = values[i] / sum_values
-        probabilities = [1 - roulette[path.id] for path in self.paths]
+        probabilities = [roulette[path.id] for path in self.paths]
         self.paths = choice(self.paths, self.size, p=probabilities)
         return self
 
@@ -62,8 +87,8 @@ class Population:
                 const_positions.append(i)
                 item = b[i]
                 i = a.index(item)
-            crossed.append(Path(tuple([a[i] if i in const_positions else b[i] for i in range(len(a))])))
-            crossed.append(Path(tuple([b[i] if i in const_positions else a[i] for i in range(len(b))])))
+            crossed.append(Path([a[i] if i in const_positions else b[i] for i in range(len(a))]))
+            crossed.append(Path([b[i] if i in const_positions else a[i] for i in range(len(b))]))
 
         self.paths = crossed
         return self
@@ -77,7 +102,6 @@ class Population:
                     pos = i
                     while pos == i:
                         pos = random.randrange(0, len(path.nodes))
-                        print('mutuje, i == {}, pos = {}'.format(i, pos))
                         if pos != i:
                             path.swap(i, pos)
             path.update_edges()
@@ -94,6 +118,9 @@ class Population:
                 shortest_path = path
         return shortest_path
 
+    def average_path_length(self):
+        return sum([path.length for path in self.paths])/len(self.paths)
+
     def longest_path(self):
         longest_path = self.paths[0]
         max_length = 0
@@ -107,12 +134,12 @@ if __name__ == "__main__":
     print('Start!')
     p = Population()
     print('Stworzyłem pustą populacje')
-    p.set_parameters(size=1, iterations=1000)
+    p.set_parameters(size=100, iterations=1000)
     print('Zainicjalizowałem populacje')
     print(p.paths)
     print('Wyświetliłem')
-    print('Sprawdzam mutację')
-    for i in range(200):
+    print('Sprawdzam reprodukcje')
+    for i in range(50):
         print(p.paths)
-        p.mutate()
+        p.reproduce()
     print(p.paths)

@@ -99,3 +99,9 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# other
+*.lnk
+.idea
+test.py
+test2.py

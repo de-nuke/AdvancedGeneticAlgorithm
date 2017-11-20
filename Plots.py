@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import QSizePolicy
 import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
-import random
+from settings import *
+
 
 class GraphCanvas(FigureCanvas):
     def __init__(self, parent=None):
@@ -22,7 +23,12 @@ class GraphCanvas(FigureCanvas):
 
     def set_nodes(self, nodes=[]):
         self.G.add_path(nodes)
-        self.pos = {1: (4,4), 2: (1,1), 3: (8,9), 4: (2,10), 5: (4,10), 6: (6,9), 7: (5,6), 8: (1,8), 9: (8,7), 10: (9,4)}
+        pos = dict()
+        for node in nodes:
+            pos.update({node: POSITIONS[node]})
+        self.pos = pos
+        print(self.pos)
+        # self.pos = {1: (4,4), 2: (1,1), 3: (8,9), 4: (2,10), 5: (4,10), 6: (6,9), 7: (5,6), 8: (1,8), 9: (8,7), 10: (9,4)}
         # self.pos = {}
         # n = len(self.G.nodes())
         # x_coords = random.sample(range(1, 1+n), n)
@@ -35,7 +41,8 @@ class GraphCanvas(FigureCanvas):
 
     def plot(self, edges=[]):
         self.ax.clear()
-
+        self.G.add_edges_from(edges)
+        print(self.pos)
         # pos = {'A': (1, 1), 'B': (2, 2), 'C': (3, 5), 'D': (4, 4), 'E': (5, 6), 'F': (6, 3), 'G': (7, 7), 'H': (8, 8)}
         # pos = nx.spring_layout(self.G)
         # pos = nx.spectral_layout(self.G)

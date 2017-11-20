@@ -2,13 +2,12 @@ import itertools
 from math import factorial
 import random
 from numpy.random import choice
-from GraphObjects import Node, Path
-
+from GraphObjects import Path
+from settings import *
 
 class Population:
     def __init__(self):
-        self.cities = {Node('A', 4, 4), Node('B', 1, 1), Node('C', 8, 9), Node('D', 2, 10), Node('E', 4, 10),
-                       Node('F', 6, 9), Node('G', 5, 6), Node('H', 1, 8), Node('I', 8, 7), Node('J', 9, 4)}
+        self.cities = CITIES
         self.MAX_SIZE = factorial(len(self.cities))
         self.size = 0
         self.iterations = 0
@@ -30,7 +29,7 @@ class Population:
         print('----Tworzę listę permutacji')
         permutations = list(itertools.permutations(self.cities))
         print('----Stworzona')
-        return [Path(permutations[i]) for i in random.sample(range(self.MAX_SIZE), self.size)]
+        return [Path(permutations[x]) for x in random.sample(range(self.MAX_SIZE), self.size)]
 
     def reproduce(self):
         values = [path.length for path in self.paths]
@@ -39,11 +38,13 @@ class Population:
 
         for i, path in enumerate(self.paths):
             roulette[path.id] = values[i] / sum_values
-        probabilities = [roulette[path.id] for path in self.paths]
+        probabilities = [1 - roulette[path.id] for path in self.paths]
         self.paths = choice(self.paths, self.size, p=probabilities)
         return self
 
     def cross(self):
+        if self.size <= 1:
+            return self
         pairs = []
         tmp_items = list(self.paths.copy())
 
@@ -67,16 +68,51 @@ class Population:
         self.paths = crossed
         return self
 
+    def mutate(self):
+        new_paths = []
+        for path in self.paths:
+            for i in range(len(path.nodes)):
+                x = random.uniform(0, 1)
+                if x <= self.mutation_prob:
+                    pos = i
+                    while pos == i:
+                        pos = random.randrange(0, len(path.nodes))
+                        print('mutuje, i == {}, pos = {}'.format(i, pos))
+                        if pos != i:
+                            path.swap(i, pos)
+            path.update_edges()
+            new_paths.append(path)
+        self.paths = new_paths
+        return self
+
+    def shortest_path(self):
+        shortest_path = self.paths[0]
+        min_length = 9999999
+        for path in self.paths:
+            if path.length < min_length:
+                min_length = path.length
+                shortest_path = path
+        return shortest_path
+
+    def longest_path(self):
+        longest_path = self.paths[0]
+        max_length = 0
+        for path in self.paths:
+            if path.length > max_length:
+                max_length = path.length
+                longest_path = path
+        return longest_path
 
 if __name__ == "__main__":
     print('Start!')
     p = Population()
     print('Stworzyłem pustą populacje')
-    p.set_parameters(size=4, iterations=1000)
+    p.set_parameters(size=1, iterations=1000)
     print('Zainicjalizowałem populacje')
     print(p.paths)
     print('Wyświetliłem')
-    print('Sprawdzam crossing')
-    print(p.paths)
-    p.cross()
+    print('Sprawdzam mutację')
+    for i in range(200):
+        print(p.paths)
+        p.mutate()
     print(p.paths)

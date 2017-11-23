@@ -41,23 +41,17 @@ class Population:
         self.progress_bar_text.setText('Ready!')
 
     def generate_n_paths(self, n):
-        print('----Tworzę listę permutacji')
-        perm_gen = itertools.permutations(self.cities)
-        total = factorial(10)
-        permutations = []
-        if self.progress_bar:
-            for i, p in enumerate(perm_gen):
-                permutations.append(p)
-                if i % (total/100) == 0:
-                    self.progress_bar.setValue(round((i+1)/total, 2) * 100)
-            self.progress_bar.setValue(100)
-        else:
-            permutations = list(perm_gen)
-        print('----Stworzona')
-        return [Path(permutations[x]) for x in random.sample(range(self.MAX_SIZE), self.size)]
+        def random_paths():
+            i = 0
+            while i < n:
+                random_cities = random.sample(self.cities, len(self.cities))
+                yield tuple(random_cities + [random_cities[0]])
+                i += 1
+
+        return [Path(path) for path in random_paths()]
 
     def reproduce(self):
-        values = [1/path.length for path in self.paths]
+        values = [1/path.length for path in self.paths]  # TODO zmienic funkcje przystosowania na tę z wykładu
         sum_values = sum(values)
         roulette = dict()
 

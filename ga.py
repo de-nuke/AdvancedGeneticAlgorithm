@@ -54,8 +54,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.reset_btn.clicked.connect(self.app.reset_click)
 
 
-
-
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     x = MainWindow()

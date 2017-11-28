@@ -15,43 +15,39 @@ class Population:
         self.mutation_prob = 0.001
         self.paths = []  # <-- Population
         self.is_initialized = False
-        self.progress_bar = None
-        self.progress_bar_text = None
         self.current_iteration = 1
         self.iteration_limit = 1
-
-    def set_progress_bar(self, progress_bar, progress_bar_text):
-        self.progress_bar = progress_bar
-        self.progress_bar_text = progress_bar_text
 
     def set_iteration_limit(self, iteration_limit):
         self.iteration_limit = iteration_limit
 
     def set_parameters(self, size=0, iterations=0, mutation_prob=0.001):
-        self.progress_bar_text.setText('Applying parameters...')
         self.size = (size if size <= self.MAX_SIZE else self.MAX_SIZE) if size > 0 else 0
         self.iterations = iterations
         self.mutation_prob = mutation_prob
         print('--Zaczynam generować')
-        self.progress_bar_text.setText('Generating paths...')
         self.paths = self.generate_n_paths(size)
         print('--Wygenerowałem')
         if size and iterations:
             self.is_initialized = True
-        self.progress_bar_text.setText('Ready!')
 
     def generate_n_paths(self, n):
+        # perms = itertools.permutations(self.cities)
+        # permutations = list(perms)
+        # return [Path(permutations[x]) for x in random.sample(range(self.MAX_SIZE), self.size)]
+
         def random_paths():
             i = 0
             while i < n:
-                random_cities = random.sample(self.cities, len(self.cities))
-                yield tuple(random_cities + [random_cities[0]])
+                x = tuple(random.sample(self.cities, len(self.cities)))
+                yield x
                 i += 1
 
         return [Path(path) for path in random_paths()]
 
     def reproduce(self):
-        values = [1/path.length for path in self.paths]  # TODO zmienic funkcje przystosowania na tę z wykładu
+        max_length = self.longest_path().length
+        values = [max_length - path.length + 1 for path in self.paths]
         sum_values = sum(values)
         roulette = dict()
 
@@ -105,7 +101,7 @@ class Population:
 
     def shortest_path(self):
         shortest_path = self.paths[0]
-        min_length = 9999999
+        min_length = 999999900
         for path in self.paths:
             if path.length < min_length:
                 min_length = path.length

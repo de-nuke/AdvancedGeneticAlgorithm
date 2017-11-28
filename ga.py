@@ -33,15 +33,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.move(10, 10)
         self.setStyleSheet(appStyle)
-        self.progressBar.hide()
+        # self.progressBar.hide()
         self.statusbar.hide()
 
         self.left_plot_layout = QVBoxLayout(self.left_frame)
-        self.graph_max_canvas = GraphCanvas()
+        self.graph_max_canvas = GraphCanvas(title='Longest path')
         self.left_plot_layout.addWidget(self.graph_max_canvas)
 
         self.right_plot_layout = QVBoxLayout(self.right_frame)
-        self.graph_min_canvas = GraphCanvas()
+        self.graph_min_canvas = GraphCanvas(title='Shortest path')
         self.right_plot_layout.addWidget(self.graph_min_canvas)
 
         self.top_plot_layout = QVBoxLayout(self.top_frame)
@@ -51,7 +51,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.app = ApplicationLogic(self)
         self.apply_btn.clicked.connect(self.app.apply_click)
         self.start_btn.clicked.connect(self.app.start_auto_click)
+        self.next_btn.clicked.connect(self.app.next_step_click)
         self.reset_btn.clicked.connect(self.app.reset_click)
+        self.stop_btn.clicked.connect(self.app.pause)
+        self.show_path_btn.clicked.connect(self.app.show_path)
+
+
+        self.iterations.valueChanged.connect(self.app.change_iterations)
+        self.mutation_prob.valueChanged.connect(self.app.change_mutation_prob)
 
 
 if __name__ == "__main__":

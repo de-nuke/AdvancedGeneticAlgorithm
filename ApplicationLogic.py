@@ -42,8 +42,8 @@ class Plotter(QThread):
                     self.main.show_path_btn.setDisabled(False)
                     self.main.when_found.setText('(after {} iterations)'.format(str(len(self.app.max_hist))))
 
-                self.main.graph_max_canvas.plot(sp.edges, length=sp.length)
-                self.main.graph_min_canvas.plot(lp.edges, length=lp.length)
+                self.main.graph_max_canvas.plot(lp.edges, length=lp.length)
+                self.main.graph_min_canvas.plot(sp.edges, length=sp.length)
                 self.main.history_canvas.plot(self.app.max_hist, self.app.avg_hist, self.app.min_hist)
 
 

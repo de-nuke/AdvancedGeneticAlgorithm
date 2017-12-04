@@ -36,13 +36,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # self.progressBar.hide()
         self.statusbar.hide()
 
-        self.left_plot_layout = QVBoxLayout(self.left_frame)
-        self.graph_max_canvas = GraphCanvas(title='Longest path')
-        self.left_plot_layout.addWidget(self.graph_max_canvas)
-
         self.right_plot_layout = QVBoxLayout(self.right_frame)
+        self.graph_max_canvas = GraphCanvas(title='Longest path')
+        self.right_plot_layout.addWidget(self.graph_max_canvas)
+
+        self.left_plot_layout = QVBoxLayout(self.left_frame)
         self.graph_min_canvas = GraphCanvas(title='Shortest path')
-        self.right_plot_layout.addWidget(self.graph_min_canvas)
+        self.left_plot_layout.addWidget(self.graph_min_canvas)
 
         self.top_plot_layout = QVBoxLayout(self.top_frame)
         self.history_canvas = HistoryCanvas()

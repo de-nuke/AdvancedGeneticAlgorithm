@@ -26,7 +26,7 @@ class Plotter(QThread):
     def run(self):
         while True:
             if self.isRunning and self.app.current_iteration <= self.app.iterations_limit:
-                # self.main.progress_bar_text.setText('Iteration: {}/{}'.format(self.app.current_iteration, self.app.iterations_limit))
+
                 self.population.reproduce().cross().mutate()
                 self.app.current_iteration += 1
 
@@ -40,10 +40,12 @@ class Plotter(QThread):
                     self.shortest_path_length = sp.length
                     self.shortest_path = sp
                     self.main.show_path_btn.setDisabled(False)
+                    self.main.when_found.setText('(after {} iterations)'.format(str(len(self.app.max_hist))))
 
                 self.main.graph_max_canvas.plot(sp.edges, length=sp.length)
                 self.main.graph_min_canvas.plot(lp.edges, length=lp.length)
                 self.main.history_canvas.plot(self.app.max_hist, self.app.avg_hist, self.app.min_hist)
+
 
                 self.main.shortest_current.setText(str(round(sp.length, 4)))
                 self.main.shortest_current_for.setText(
@@ -53,6 +55,8 @@ class Plotter(QThread):
                 self.main.shortest_ever_for.setText(
                     ' -> '.join(list(str(self.shortest_path)))
                 )
+                self.main.progress_bar_text.setText(
+                    'Iteration: {}/{}'.format(len(self.app.max_hist), self.app.iterations_limit))
 
                 if self.mode == 'SINGLE_STEP':
                     self.isRunning = False

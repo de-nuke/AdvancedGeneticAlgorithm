@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'w2.ui'
 #
-# Created by: PyQt5 UI code generator 5.8.2
+# Created by: PyQt5 UI code generator 5.6
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -159,6 +159,9 @@ class Ui_MainWindow(object):
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
         self.verticalLayout_5.addWidget(self.label_6)
+        self.when_found = QtWidgets.QLabel(self.widget_5)
+        self.when_found.setObjectName("when_found")
+        self.verticalLayout_5.addWidget(self.when_found)
         self.shortest_ever = QtWidgets.QLabel(self.widget_5)
         font = QtGui.QFont()
         font.setBold(True)
@@ -211,6 +214,10 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.progress_bar_text = QtWidgets.QLabel(self.widget_4)
+        self.progress_bar_text.setText("")
+        self.progress_bar_text.setObjectName("progress_bar_text")
+        self.verticalLayout_6.addWidget(self.progress_bar_text)
         self.verticalLayout_4.addWidget(self.widget_4)
         self.verticalLayout_3.addLayout(self.verticalLayout_4)
         self.verticalLayout_3.setStretch(0, 40)
@@ -241,5 +248,6 @@ class Ui_MainWindow(object):
         self.pushButton.setText(_translate("MainWindow", "Refresh"))
         self.label_4.setText(_translate("MainWindow", "Shortest distance in current population"))
         self.label_6.setText(_translate("MainWindow", "Shortest distance ever found:"))
+        self.when_found.setText(_translate("MainWindow", "(after ? iterations)"))
         self.show_path_btn.setText(_translate("MainWindow", "Show this path"))
 

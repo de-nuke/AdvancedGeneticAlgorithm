@@ -302,6 +302,13 @@
              </widget>
             </item>
             <item>
+             <widget class="QLabel" name="when_found">
+              <property name="text">
+               <string>(after ? iterations)</string>
+              </property>
+             </widget>
+            </item>
+            <item>
              <widget class="QLabel" name="shortest_ever">
               <property name="font">
                <font>
@@ -399,6 +406,13 @@
          <property name="margin">
           <number>0</number>
          </property>
+         <item>
+          <widget class="QLabel" name="progress_bar_text">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
         </layout>
        </widget>
       </item>

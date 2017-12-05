@@ -2,6 +2,7 @@ from math import sqrt
 from utils import distance
 from settings import *
 
+
 # class Node:
 #     def __init__(self, label, x, y):
 #         self.label = label
@@ -40,7 +41,7 @@ class Path:
         self.length = 0
         for i in range(len(nodes) - 1):
             self.edges.append((nodes[i], nodes[i + 1]))
-            self.length += distance(self.positions[nodes[i]], self.positions[nodes[i+1]])
+            self.length += distance(self.positions[nodes[i]], self.positions[nodes[i + 1]])
 
     @property
     def id(self):

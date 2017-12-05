@@ -56,7 +56,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.stop_btn.clicked.connect(self.app.pause)
         self.show_path_btn.clicked.connect(self.app.show_path)
 
-
         self.iterations.valueChanged.connect(self.app.change_iterations)
         self.mutation_prob.valueChanged.connect(self.app.change_mutation_prob)
 

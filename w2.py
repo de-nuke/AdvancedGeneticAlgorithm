@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -250,4 +251,3 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "Shortest distance ever found:"))
         self.when_found.setText(_translate("MainWindow", "(after ? iterations)"))
         self.show_path_btn.setText(_translate("MainWindow", "Show this path"))
-

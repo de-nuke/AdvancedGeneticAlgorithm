@@ -4,7 +4,16 @@ import sys
 import matplotlib.pyplot as plt
 
 
+def av(x):
+    """
+    Average of values in X sequence.
+    """
+    return round(sum(x) / len(x), 2)
+
+
 class Plotter(QThread):
+    min5, max5, avg5, b5 = [], [], [], []
+    counter = 1
 
     def __init__(self, app):
         QThread.__init__(self)
@@ -46,7 +55,6 @@ class Plotter(QThread):
                 self.main.graph_min_canvas.plot(sp.edges, length=sp.length)
                 self.main.history_canvas.plot(self.app.max_hist, self.app.avg_hist, self.app.min_hist)
 
-
                 self.main.shortest_current.setText(str(round(sp.length, 4)))
                 self.main.shortest_current_for.setText(
                     ' -> '.join(list(str(sp)))
@@ -57,6 +65,22 @@ class Plotter(QThread):
                 )
                 self.main.progress_bar_text.setText(
                     'Iteration: {}/{}'.format(len(self.app.max_hist), self.app.iterations_limit))
+
+                # For reporting purposes. Prints table content for LaTeX document
+                if self.app.current_iteration == self.app.iterations_limit:
+                    print(self.counter, '&', round(self.app.min_hist[-1], 2), '&', round(self.app.max_hist[-1], 2), '&',
+                          round(self.app.avg_hist[-1], 2), '&', round(sp.length, 2), '\\\\\\hline')
+                    self.min5.append(self.app.min_hist[-1])
+                    self.max5.append(self.app.max_hist[-1])
+                    self.avg5.append(self.app.avg_hist[-1])
+                    self.b5.append(sp.length)
+                    if self.counter == 5:
+                        print('&avg. min:&avg. max:&avg. mean:&avg. best:\\\\\\hline')
+                        print('&', av(self.min5), '&', av(self.max5), '&', av(self.avg5), '&', av(self.b5),
+                              '\\\\\\hline')
+                        self.min5, self.max5, self.avg5, self.b5 = [], [], [], []
+                        self.counter = 0
+                    self.counter += 1
 
                 if self.mode == 'SINGLE_STEP':
                     self.isRunning = False
@@ -78,8 +102,6 @@ class ApplicationLogic:
 
         self.main.graph_max_canvas.set_nodes(self.population.cities)
         self.main.graph_min_canvas.set_nodes(self.population.cities)
-
-
 
     def apply_click(self):
         self.main.apply_btn.setText('Applying...')
@@ -147,7 +169,7 @@ class ApplicationLogic:
         self.main.apply_btn.setDisabled(False)
         self.main.graph_max_canvas.plot()
         self.main.graph_min_canvas.plot()
-        self.main.history_canvas.plot([],[],[])
+        self.main.history_canvas.plot([], [], [])
         self.main.history_canvas.txt.set_text('')
         self.main.history_canvas.draw()
         # self.main.size.setValue(2)
@@ -198,5 +220,5 @@ class ApplicationLogic:
 
         plt.plot(x, y, 'o-')
         for label, x, y in zip(labels, x, y):
-            plt.annotate(label, xy=(x, y), xytext=(25,-4), textcoords='offset points', ha='right', va='top')
+            plt.annotate(label, xy=(x, y), xytext=(25, -4), textcoords='offset points', ha='right', va='top')
         plt.show()

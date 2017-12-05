@@ -25,9 +25,7 @@ class Population:
         self.size = (size if size <= self.MAX_SIZE else self.MAX_SIZE) if size > 0 else 0
         self.iterations = iterations
         self.mutation_prob = mutation_prob
-        print('--Zaczynam generować')
         self.paths = self.generate_n_paths(size)
-        print('--Wygenerowałem')
         if size and iterations:
             self.is_initialized = True
 
@@ -109,7 +107,7 @@ class Population:
         return shortest_path
 
     def average_path_length(self):
-        return sum([path.length for path in self.paths])/len(self.paths)
+        return sum([path.length for path in self.paths]) / len(self.paths)
 
     def longest_path(self):
         longest_path = self.paths[0]
@@ -119,6 +117,7 @@ class Population:
                 max_length = path.length
                 longest_path = path
         return longest_path
+
 
 if __name__ == "__main__":
     print('Start!')

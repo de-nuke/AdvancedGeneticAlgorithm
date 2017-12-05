@@ -9,6 +9,7 @@ from settings import *
 import numpy
 from utils import rgb
 
+
 class GraphCanvas(FigureCanvas):
     def __init__(self, parent=None, title=''):
         fig = Figure()
@@ -24,7 +25,8 @@ class GraphCanvas(FigureCanvas):
         self.G = nx.Graph()
         self.ax.patch.set_alpha(0)
         self.pos = nx.random_layout(self.G)
-        self.txt = self.ax.text(0.5, 0.9, '', transform=self.ax.transAxes, bbox=dict(facecolor='green', alpha=0.5), horizontalalignment='center')
+        self.txt = self.ax.text(0.5, 0.9, '', transform=self.ax.transAxes, bbox=dict(facecolor='green', alpha=0.5),
+                                horizontalalignment='center')
 
     def set_nodes(self, nodes=[]):
         self.G.add_path(nodes)
@@ -50,10 +52,11 @@ class GraphCanvas(FigureCanvas):
             positions = [ordered_nodes.index(c) for c in CITIES]
             colors = [COLORS[p] for p in positions]
         else:
-            colors = ['red']*10
+            colors = ['red'] * 10
         nx.draw_networkx_nodes(self.G, self.pos, cmap=plt.get_cmap('jet'), node_size=300, ax=self.ax, node_color=colors)
         nx.draw_networkx_labels(self.G, self.pos, ax=self.ax)
-        nx.draw_networkx_edges(self.G, self.pos, cmap=plt.get_cmap('jet'), edgelist=edges, arrows=False, ax=self.ax, edge_color='b')
+        nx.draw_networkx_edges(self.G, self.pos, cmap=plt.get_cmap('jet'), edgelist=edges, arrows=False, ax=self.ax,
+                               edge_color='b')
         self.ax.patch.set_alpha(0)
         self.draw()
 
@@ -68,7 +71,8 @@ class HistoryCanvas(FigureCanvas):
         FigureCanvas.updateGeometry(self)
         self.ax = self.figure.add_subplot(111)
         # fig.tight_layout()
-        self.txt = self.ax.text(0.5, 0.9, '', transform=self.ax.transAxes, bbox=dict(facecolor='green', alpha=0.5), horizontalalignment='center')
+        self.txt = self.ax.text(0.5, 0.9, '', transform=self.ax.transAxes, bbox=dict(facecolor='green', alpha=0.5),
+                                horizontalalignment='center')
         self.ax.patch.set_alpha(0)
         self.y_lim = ()
 
@@ -88,7 +92,9 @@ class HistoryCanvas(FigureCanvas):
         # self.y_lim = self.ax.get_ylim()
         if min_hist and max_hist:
             self.ax.set_ylim([0.9 * min(min_hist), 1.1 * max(max_hist)])
-            self.txt.set_text('Maximum = {}, Minimum = {}, Average = {}'.format(round(max_hist[-1], 2), round(min_hist[-1], 2), round(avg_hist[-1], 2)))
+            self.txt.set_text(
+                'Maximum = {}, Minimum = {}, Average = {}'.format(round(max_hist[-1], 2), round(min_hist[-1], 2),
+                                                                  round(avg_hist[-1], 2)))
         self.ax.relim()
         self.ax.legend(loc=3, bbox_to_anchor=(0., 1.0, 1., .102), mode='expand', ncol=3)
         self.ax.autoscale_view(True, True, True)
